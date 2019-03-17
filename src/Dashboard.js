@@ -4,23 +4,59 @@ class Dashboard extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {info: ""};
+        this.state = {
+            data: [],
+            searchBar: ""
+        };
     }
 
-    componentDidMount(){
+    doSearch = () => {
         
-        var searchurl = 'https://api.twitch.tv/kraken/search/channels?query=starcraft';
+        var searchurl = 'https://api.twitch.tv/helix/streams/?';
+        searchurl += this.state.searchBar;
         
-        fetch(searchurl, {method: 'GET', mode: 'no-cors', headers: {'Authorization': 'Bearer' + this.props.userToken}}).then((res)=>{
-            console.log(res);
+        console.log(searchurl);
+
+        fetch(searchurl, {
+            headers: {
+                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e'
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+
+            console.log(data);
+
+            var names = [];
+
+            data.data.forEach(element => {
+                names.push(element.user_name);
+            });            
+
+            this.setState({data: names});
+
+            console.log(this.state.data);
+            console.log(this.state.searchBar);
+
         });
 
     }
 
+    updateSearchBar = (e) => {
+        this.setState({searchBar: e.target.value});
+    }
+
     render() {
+
         return (
             <div>
+                <form>
+                    Search a game:
+                    <input type="text" name="gameSearch" onChange={this.updateSearchBar}/>
+                    <input type="submit" name="Search" onClick={this.doSearch} />
+                </form>
                 {this.props.userToken}
+                {this.state.data}
             </div>
         );
     }
