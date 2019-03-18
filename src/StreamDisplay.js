@@ -20,7 +20,7 @@ class StreamDisplay extends Component {
         var gamesurl = 'https://api.twitch.tv/helix/games?id=';
         gamesurl = gamesurl + this.props.Game_ID;
 
-        console.log(gamesurl);
+        //console.log(gamesurl);
         //fetches game data, and sets gameid state
         fetch(gamesurl, {
             headers: {
@@ -31,13 +31,14 @@ class StreamDisplay extends Component {
         .then(response => response.json())
         .then((data) => {
 
-            console.log(data);
-            if(data.data !== undefined){
+            if(data.data !== undefined && data.data.length !== 0){
                 this.setState({name: data.data[0].name});
+            } else {
+                this.setState({name: "No Game Provided"});
             }
             
         });
-        
+
     }
 
     componentWillMount(){

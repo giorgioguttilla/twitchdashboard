@@ -10,8 +10,8 @@ class Dashboard extends Component {
             searchBar: "",
             gameid: "",
             cursor: "",
-            prev: "",
-            next: "",
+            before: "",
+            after: "",
             error: ""
         };
     }
@@ -72,6 +72,14 @@ class Dashboard extends Component {
             searchurl = searchurl + this.state.gameid;
         }
 
+        // if(this.state.before){
+        //     searchurl = searchurl + '&before=' + this.state.cursor;
+        // } else if(this.state.after){
+        //     searchurl = searchurl + '&after=' + this.state.cursor;
+        // }
+
+        console.log(searchurl);
+
         //fetches stream data with client id and puts it in json format
         fetch(searchurl, {
             headers: {
@@ -82,7 +90,8 @@ class Dashboard extends Component {
         .then(response => response.json())
         .then((data) => {
 
-            this.setState({data: data.data});
+            //gets data as well as cursor of current page
+            this.setState({data: data.data, cursor: data.pagination.cursor});
             console.log(data);
 
         });
@@ -131,12 +140,61 @@ class Dashboard extends Component {
         this.setState({searchBar: e.target.value});
     }
 
+    //gets prev/next page
     prevPage = () => {
+        var prevurl = 'https://api.twitch.tv/helix/streams/';
         
+        if(this.state.gameid !== ''){
+            prevurl = prevurl + '?game_id=';
+            prevurl = prevurl + this.state.gameid;
+            prevurl = prevurl + '&before=' + this.state.cursor;
+        } else {
+            prevurl = prevurl + '?before=' + this.state.cursor;
+        }
+
+        //fetches stream data with client id and puts it in json format
+        fetch(prevurl, {
+            headers: {
+                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+
+            //gets data as well as cursor of current page
+            this.setState({data: data.data, cursor: data.pagination.cursor});
+            console.log(data);
+
+        });
     }
 
     nextPage = () => {
+        var nexturl = 'https://api.twitch.tv/helix/streams/';
+        
+        if(this.state.gameid !== ''){
+            nexturl = nexturl + '?game_id=';
+            nexturl = nexturl + this.state.gameid;
+            nexturl = nexturl + '&after=' + this.state.cursor;
+        } else {
+            nexturl = nexturl + '?after=' + this.state.cursor;
+        }
 
+        //fetches stream data with client id and puts it in json format
+        fetch(nexturl, {
+            headers: {
+                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+
+            //gets data as well as cursor of current page
+            this.setState({data: data.data, cursor: data.pagination.cursor});
+            console.log(data);
+
+        });
     }
 
     //displays top channels of all categories by default
@@ -145,6 +203,10 @@ class Dashboard extends Component {
     }
 
     render() {
+
+        console.log(this.state.cursor);
+        console.log(this.state.before);
+        console.log(this.state.after);
 
         return (
             <div>

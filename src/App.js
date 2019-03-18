@@ -16,9 +16,6 @@ class App extends Component {
 
   render() {
     
-    console.log(window.location.hash.substr(1).substring(13));
-    console.log(window.location.hash.substr(1).substring(0, 13));
-
     var thisHash = window.location.hash;
 
     if (thisHash === '') {
@@ -40,6 +37,8 @@ class App extends Component {
 
       //sets local token variable
       localStorage.setItem('token', token);
+
+      //window.location = 'http://localhost:3000';
 
       return (
         <div>
