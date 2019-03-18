@@ -9,6 +9,9 @@ class Dashboard extends Component {
             data: [],
             searchBar: "",
             gameid: "",
+            cursor: "",
+            prev: "",
+            next: "",
             error: ""
         };
     }
@@ -36,7 +39,8 @@ class Dashboard extends Component {
         //fetches game data, and sets gameid state
         fetch(gamesurl, {
             headers: {
-                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e'
+                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
         })
         .then(response => response.json())
@@ -44,7 +48,7 @@ class Dashboard extends Component {
 
             //if the data returned from the query is empty, error. 
             //if it is full, search by id and reset error
-            if(data.data.length == 0){
+            if(data.data.length === 0){
                 this.setState({error: "error: no such game exists"});
             } else {
                 this.setState({gameid: data.data[0].id, error: ""});
@@ -71,22 +75,68 @@ class Dashboard extends Component {
         //fetches stream data with client id and puts it in json format
         fetch(searchurl, {
             headers: {
-                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e'
+                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
             }
         })
         .then(response => response.json())
         .then((data) => {
 
             this.setState({data: data.data});
-            console.log(this.state.data);
+            console.log(data);
 
         });
+    }
+
+
+
+    createElements = () => {
+
+        //creates a list of streamdisplay objects with information taken from 
+        //data from the query
+
+        var elems = [];
+
+        this.state.data.forEach((entry) => {
+
+            //thumbnail urls come in the form https://....-{width}x{height}.jpg, which needs to be 
+            //changed to a resolution which is done below
+            var repl = entry.thumbnail_url.replace("{width}", "200").replace("{height}", "200");
+
+            //JSX object is created and appended to list
+            var sd = (
+                <StreamDisplay 
+                    key={entry.id}
+                    DisplayName={entry.user_name}
+                    Game_ID={entry.game_id}
+                    ViewCount={entry.viewer_count}
+                    Description={entry.title}
+                    ThumbnailURL={repl}
+                />
+            );
+
+            elems.push(sd);
+        });
+
+        return (
+            <div>
+                {elems}
+            </div>
+        );
     }
 
 
     //keeps track of search bar text
     updateSearchBar = (e) => {
         this.setState({searchBar: e.target.value});
+    }
+
+    prevPage = () => {
+        
+    }
+
+    nextPage = () => {
+
     }
 
     //displays top channels of all categories by default
@@ -98,12 +148,13 @@ class Dashboard extends Component {
 
         return (
             <div>
-                
                 Search a game:
                 <input type="text" name="gameSearch" onChange={this.updateSearchBar}/>
                 <button onClick={this.doGameSearch}>Search</button>
+                <button onClick={this.prevPage}>{"<"}</button>
+                <button onClick={this.nextPage}>{">"}</button>
                 {this.state.error}
-                {this.props.userToken}
+                {this.createElements()}
             </div>
         );
     }

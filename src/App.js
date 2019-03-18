@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
 
@@ -10,10 +9,13 @@ class App extends Component {
     console.log(window.location);
   };
 
-  render() {
-    // var authurl =
-    // "https://id.twitch.tv/oauth2/authorize?client_id=mhslann5zow8404zgxj85vjg1bs67e&redirect_uri=http://localhost:3000&response_type=token&scope=";
+  componentWillMount() {
+    //sets client id variable, should never change
+    localStorage.setItem('Client-ID', 'mhslann5zow8404zgxj85vjg1bs67e');
+  }
 
+  render() {
+    
     console.log(window.location.hash.substr(1).substring(13));
     console.log(window.location.hash.substr(1).substring(0, 13));
 
@@ -34,9 +36,14 @@ class App extends Component {
       //cleans the information from twitch so the token is isolated
       var urlSplit = thisHash.split('&');
 
+      var token = urlSplit[0].substring(14);
+
+      //sets local token variable
+      localStorage.setItem('token', token);
+
       return (
         <div>
-          <Dashboard userToken={urlSplit[0].substring(14)} />
+          <Dashboard />
         </div>
       );
 

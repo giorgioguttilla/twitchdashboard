@@ -1,24 +1,55 @@
 import React, { Component } from "react";
+import './StreamDisplay.css';
 
 class StreamDisplay extends Component {
     constructor(props){
         super(props);
         /*props should be:
         DisplayName
-        GameName
+        Game_ID
         ViewCount
         Description
         ThumbnailURL
         */
+       this.state = {
+           name: ""
+       }
+    }
 
+    getGameName = () => {
+        var gamesurl = 'https://api.twitch.tv/helix/games?id=';
+        gamesurl = gamesurl + this.props.Game_ID;
+
+        console.log(gamesurl);
+        //fetches game data, and sets gameid state
+        fetch(gamesurl, {
+            headers: {
+                'Client-ID': 'mhslann5zow8404zgxj85vjg1bs67e',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        .then(response => response.json())
+        .then((data) => {
+
+            console.log(data);
+            if(data.data !== undefined){
+                this.setState({name: data.data[0].name});
+            }
+            
+        });
+        
+    }
+
+    componentWillMount(){
+        this.getGameName();
     }
 
     render() {
         return (
             <div id="BoundingBox">
-                <img src={this.props.ThumbnailURL} alt="Thumbnail"/>
+                <img id="ThumbnailImage"src={this.props.ThumbnailURL} alt="Thumbnail"/>
                 <div id="DisplayName">{this.props.DisplayName}</div>
-                <div id="ViewCount">{this.props.GameName} - {this.props.ViewCount} viewers</div>
+                <div id="ViewCount">{this.state.name} - {this.props.ViewCount} viewers</div>
                 <div id="Description">{this.props.Description}</div>
             </div>
         );
