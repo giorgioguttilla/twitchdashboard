@@ -1,5 +1,12 @@
 #BoundingBox {
-    background-color: azure
+    
+    width: 356px;
+    padding: 10px;
+    height: 300px;
+    display: inline-block;
+    top: 0;
+    line-height: 20px;
+    
 }
 
 #DisplayName {
@@ -7,5 +14,13 @@
 }
 
 #Description {
-    font-style: italic
+    font-style: italic;
+    position: absolute;
+    text-align: center;
+    width: 356px;
+    text-overflow: ellipsis;
+}
+
+#ThumbnailImage{
+    border-radius: 5px;
 }
