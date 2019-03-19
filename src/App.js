@@ -5,10 +5,6 @@ import Dashboard from "./Dashboard";
 
 class App extends Component {
 
-  login = () => {
-    console.log(window.location);
-  };
-
   componentWillMount() {
     //sets client id variable, should never change
     localStorage.setItem('Client-ID', 'mhslann5zow8404zgxj85vjg1bs67e');
@@ -19,8 +15,6 @@ class App extends Component {
     var thisHash = window.location.hash;
 
     if (thisHash === '') {
-
-      console.log("no login");
 
       return (
         <div>
@@ -35,10 +29,8 @@ class App extends Component {
 
       var token = urlSplit[0].substring(14);
 
-      //sets local token variable
+      //sets local token variable for api queries in dashboard
       localStorage.setItem('token', token);
-
-      //window.location = 'http://localhost:3000';
 
       return (
         <div>

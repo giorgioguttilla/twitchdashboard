@@ -20,7 +20,6 @@ class StreamDisplay extends Component {
         var gamesurl = 'https://api.twitch.tv/helix/games?id=';
         gamesurl = gamesurl + this.props.Game_ID;
 
-        //console.log(gamesurl);
         //fetches game data, and sets gameid state
         fetch(gamesurl, {
             headers: {
