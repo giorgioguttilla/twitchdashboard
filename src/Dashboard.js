@@ -478,6 +478,11 @@ class Dashboard extends Component {
         }
     }
 
+    toTop = () => {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+
     updateResults = () => {
         if(this.state.searchBar === ""){
             this.setState({displaying: "Showing top streams:"});
@@ -506,6 +511,7 @@ class Dashboard extends Component {
                     {this.pageControls()}
                     {this.createElements()}
                     {this.pageControls()}
+                    <button onClick={this.toTop} id="toTop">Back to top</button>
                     <br/>
                     <br/>
                 </div>
